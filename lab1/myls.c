@@ -393,7 +393,7 @@ bool isFind(char** mas, int n, char* str) {
 
 int main(int argc, char** argv) {
     char c;
-    bool isA = true;
+    bool isA;
     bool isL;
     while ((c = getopt(argc, argv, "la")) != -1)
     {
