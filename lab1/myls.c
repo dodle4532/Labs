@@ -415,7 +415,6 @@ int main(int argc, char** argv) {
             break;
         }
     }
-    directory = "/tmp";
     if (directory[0] == 0) {
         directory[0] = '.';
     }
