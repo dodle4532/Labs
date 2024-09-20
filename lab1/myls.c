@@ -200,6 +200,7 @@ char* getGroup(char* fileName) {
     if (grp->gr_name = NULL) {
         char* res = calloc(10, sizeof(char));
         sprintf(res, "%d", grp->gr_gid);
+        free(grp);
         return res;
     }
     return grp->gr_name;
@@ -219,6 +220,7 @@ char* getOwner(char* fileName) {
     if (pw->pw_name = NULL) {
         char* res = calloc(10, sizeof(char));
         sprintf(res, "%d", pw->pw_gid);
+        free(pw);
         return res;
     }
     return pw->pw_name;
