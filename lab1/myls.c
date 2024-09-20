@@ -197,12 +197,6 @@ char* getGroup(char* fileName) {
         perror("Error in getgrpuid");
         return "";
     }
-    if (grp->gr_name = NULL) {
-        char* res = calloc(10, sizeof(char));
-        sprintf(res, "%d", grp->gr_gid);
-        free(grp);
-        return res;
-    }
     return grp->gr_name;
 }
 
@@ -216,12 +210,6 @@ char* getOwner(char* fileName) {
     if(pw == NULL) {
         perror("Error in getpwuid");
         return "";
-    }
-    if (pw->pw_name = NULL) {
-        char* res = calloc(10, sizeof(char));
-        sprintf(res, "%d", pw->pw_gid);
-        free(pw);
-        return res;
     }
     return pw->pw_name;
 }
@@ -406,7 +394,7 @@ bool isFind(char** mas, int n, char* str) {
 int main(int argc, char** argv) {
     char c;
     bool isA = true;
-    bool isL = true;
+    bool isL;
     while ((c = getopt(argc, argv, "la")) != -1)
     {
         switch (c)
