@@ -11,6 +11,7 @@
 #include <grp.h>
 #include <string.h>
 #include <unistd.h>
+#include <ctype.h>
 
 enum Type {
     UNKNOWN = 0,
@@ -91,7 +92,7 @@ char* getPermissions(char* filename) {
         exit(EXIT_FAILURE);
     }
 
-    char* permissions = (char*) calloc(10, sizeof(char));
+    char* permissions = (char*) calloc(20, sizeof(char));
     if (!permissions) {
         perror("calloc");
         exit(EXIT_FAILURE);
@@ -114,38 +115,75 @@ char* getPermissions(char* filename) {
 
 int cmp(const void* s1, const void* s2)
 {
-    const char** a = (const char**) s1;
-    const char** b = (const char**) s2;
-    char* str1 = calloc(strlen(*a), sizeof(char));
-    strcpy(str1, *a);
+    const char* a = *(const char**)s1;
+    const char* b = *(const char**)s2;
+    
+    char* str1 = strdup(a);
+    char* str2 = strdup(b);
+    
     int len1 = strlen(str1);
-    if (str1[0] == '.' && len1 > 2) {
-        memmove(str1, str1 + 1, len1 - 1);
-        str1[len1 - 1] = 0;
-    }
-    char* str2 = calloc(strlen(*b), sizeof(char));
-    strcpy(str2, *b);
     int len2 = strlen(str2);
-    if (str2[0] == '.' && len2 > 2) {
-        memmove(str2, str2 + 1, len2 - 1);
-        str2[len2 - 1] = 0;
+    
+    if (str1[0] == '.' && len1 > 1) {
+        memmove(str1, str1 + 1, len1);
     }
+    if (str2[0] == '.' && len2 > 1) {
+        memmove(str2, str2 + 1, len2);
+    }
+    
     for (int i = 0; i < len1; ++i) {
-        if (str1[i] > 64 && str1[i] < 91) {
-            str1[i] += 32;
+        if (isupper(str1[i])) {
+            str1[i] = tolower(str1[i]);
         }
     }
     for (int i = 0; i < len2; ++i) {
-        if (str2[i] > 64 && str2[i] < 91) {
-            str2[i] += 32;
+        if (isupper(str2[i])) {
+            str2[i] = tolower(str2[i]);
         }
     }
-     
+    
     int res = strcmp(str1, str2);
+    
     free(str1);
     free(str2);
+    
     return res;
 }
+
+// int cmp(const void* s1, const void* s2)
+// {
+//     const char** a = (const char**) s1;
+//     const char** b = (const char**) s2;
+//     char* str1 = calloc(strlen(*a), sizeof(char));
+//     strcpy(str1, *a);
+//     int len1 = strlen(str1);
+//     if (str1[0] == '.' && len1 > 2) {
+//         memmove(str1, str1 + 1, len1 - 1);
+//         str1[len1 - 1] = 0;
+//     }
+//     char* str2 = calloc(strlen(*b), sizeof(char));
+//     strcpy(str2, *b);
+//     int len2 = strlen(str2);
+//     if (str2[0] == '.' && len2 > 2) {
+//         memmove(str2, str2 + 1, len2 - 1);
+//         str2[len2 - 1] = 0;
+//     }
+//     for (int i = 0; i < len1; ++i) {
+//         if (str1[i] > 64 && str1[i] < 91) {
+//             str1[i] += 32;
+//         }
+//     }
+//     for (int i = 0; i < len2; ++i) {
+//         if (str2[i] > 64 && str2[i] < 91) {
+//             str2[i] += 32;
+//         }
+//     }
+     
+//     int res = strcmp(str1, str2);
+//     free(str1);
+//     free(str2);
+//     return res;
+// }
 
 enum Type getFileType(const char *fileName) {
     struct stat fileStat;
@@ -393,8 +431,8 @@ bool isFind(char** mas, int n, char* str) {
 
 int main(int argc, char** argv) {
     char c;
-    bool isA;
-    bool isL;
+    bool isA = false;
+    bool isL = false;
     while ((c = getopt(argc, argv, "la")) != -1)
     {
         switch (c)
@@ -415,7 +453,6 @@ int main(int argc, char** argv) {
             break;
         }
     }
-
     if (directory[0] == 0) {
         directory[0] = '.';
     }
@@ -428,7 +465,7 @@ int main(int argc, char** argv) {
     int curName = 0;
     if ((dir = opendir (directory)) != NULL) {
         while ((ent = readdir (dir)) != NULL) {
-            if (isA || ((ent->d_name[0] != '.'))) {
+            if (ent->d_name != NULL && (isA || ((ent->d_name[0] != '.')))) {
                 if (directory[0] == '.' && directory[1] == '\0') {
                     strcpy(names[curName], ent->d_name);
                 }
