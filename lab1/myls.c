@@ -150,41 +150,6 @@ int cmp(const void* s1, const void* s2)
     return res;
 }
 
-// int cmp(const void* s1, const void* s2)
-// {
-//     const char** a = (const char**) s1;
-//     const char** b = (const char**) s2;
-//     char* str1 = calloc(strlen(*a), sizeof(char));
-//     strcpy(str1, *a);
-//     int len1 = strlen(str1);
-//     if (str1[0] == '.' && len1 > 2) {
-//         memmove(str1, str1 + 1, len1 - 1);
-//         str1[len1 - 1] = 0;
-//     }
-//     char* str2 = calloc(strlen(*b), sizeof(char));
-//     strcpy(str2, *b);
-//     int len2 = strlen(str2);
-//     if (str2[0] == '.' && len2 > 2) {
-//         memmove(str2, str2 + 1, len2 - 1);
-//         str2[len2 - 1] = 0;
-//     }
-//     for (int i = 0; i < len1; ++i) {
-//         if (str1[i] > 64 && str1[i] < 91) {
-//             str1[i] += 32;
-//         }
-//     }
-//     for (int i = 0; i < len2; ++i) {
-//         if (str2[i] > 64 && str2[i] < 91) {
-//             str2[i] += 32;
-//         }
-//     }
-     
-//     int res = strcmp(str1, str2);
-//     free(str1);
-//     free(str2);
-//     return res;
-// }
-
 enum Type getFileType(const char *fileName) {
     struct stat fileStat;
     char buff[1024];
@@ -216,7 +181,7 @@ long getSize(char *fileName) {
 
 int getNumOfLinks(char* fileName) {
     struct stat fileStat;
-    if(stat(fileName, &fileStat) < 0) {
+    if(lstat(fileName, &fileStat) < 0) {
         perror("Error in stat");
         return -1;
     }
@@ -232,10 +197,13 @@ char* getGroup(char* fileName) {
     struct group *grp = getgrgid(fileStat.st_uid);
 
     if(grp == NULL) {
-        perror("Error in getgrpuid");
-        return "";
+        char* str = (char*) calloc(10, sizeof(char));
+        sprintf(str, "%d", fileStat.st_uid);
+        return str;
     }
-    return grp->gr_name;
+    char* str = (char*) calloc(20, sizeof(char));
+    strcpy(str, grp->gr_name);
+    return str;
 }
 
 char* getOwner(char* fileName) {
@@ -246,10 +214,13 @@ char* getOwner(char* fileName) {
     }
     struct passwd *pw = getpwuid(fileStat.st_uid);
     if(pw == NULL) {
-        perror("Error in getpwuid");
-        return "";
+        char* str = (char*) calloc(10, sizeof(char));
+        sprintf(str, "%d", fileStat.st_gid);
+        return str;
     }
-    return pw->pw_name;
+    char* str = (char*) calloc(20, sizeof(char));
+    strcpy(str, pw->pw_name);
+    return str;
 }
 
 void setColor(enum Type type) {
@@ -414,6 +385,10 @@ void printL(char** names, int namesCount, char* directory) {
         free(permissions);
         free(day);
         free(time);
+    }
+    for (int i = 0; i < namesCount; ++i) {
+        free(owners[i]);
+        free(groups[i]);
     }
 }
 
