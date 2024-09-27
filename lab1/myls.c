@@ -87,7 +87,7 @@ char* getMonth(time_t time) {
 
 char* getPermissions(char* filename) {
     struct stat file_stat;
-    if (stat(filename, &file_stat) < 0) {
+    if (lstat(filename, &file_stat) < 0) {
         perror("stat");
         exit(EXIT_FAILURE);
     }
@@ -190,7 +190,7 @@ int getNumOfLinks(char* fileName) {
 
 char* getGroup(char* fileName) {
     struct stat fileStat;
-    if(stat(fileName, &fileStat) < 0) {
+    if(lstat(fileName, &fileStat) < 0) {
         perror("Error in stat");
         return "";
     }
@@ -208,7 +208,7 @@ char* getGroup(char* fileName) {
 
 char* getOwner(char* fileName) {
     struct stat fileStat;
-    if(stat(fileName, &fileStat) < 0) {
+    if(lstat(fileName, &fileStat) < 0) {
         perror("Error in stat");
         return "";
     }
@@ -407,7 +407,7 @@ bool isFind(char** mas, int n, char* str) {
 int main(int argc, char** argv) {
     char c;
     bool isA = false;
-    bool isL = false;
+    bool isL = true;
     while ((c = getopt(argc, argv, "la")) != -1)
     {
         switch (c)
