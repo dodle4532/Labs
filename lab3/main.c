@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
             break;
         case 0:
             atexit(func2);
-            sleep(100);
+            sleep(3);
             printf("[CHILD]I'm child of %d, my pid is %d\n", getppid(), getpid());
             break;
         default:
