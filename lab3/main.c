@@ -6,6 +6,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <unistd.h>
 
 void func() {
     printf("I'm atexit 1 for process %d\n", getpid());
@@ -14,22 +15,20 @@ void func2() {
     printf("I'm atexit 2 for process %d\n", getpid());
 }
 
-// Так я проверял отработку SIGTERM, нажимал Ctrl+C и сначала заходило сюда - потом убиваю его. В общем случае 2 функции избыточны
-void handlerINT(int sig) {
-    //kill(getpid(), 15);
-    printf("Signal %d recieved\n", sig);
-}
-
-void handlerTERM(int sig) {
-    printf("Signal %d recieved\n", sig);
+void handler(int sig) {
+    printf("Signal %d recieved, pid - %d\n", sig, getpid());
 }
 
 int main(int argc, char **argv) {
     (void)argc; (void)argv;
     int res = 0;
     atexit(func);
-    signal(SIGINT, handlerINT);
-    signal(SIGTERM, handlerTERM);
+    struct sigaction sigterm_action;
+    memset(&sigterm_action, 0, sizeof(sigterm_action));
+    sigterm_action.sa_handler = &handler;
+    sigterm_action.sa_flags = SA_SIGINFO;
+    sigaction(SIGINT, &sigterm_action, NULL);
+    sigaction(SIGTERM, &sigterm_action, NULL);
     switch (res = fork()) {
         case -1:
             int err = errno;
@@ -38,10 +37,10 @@ int main(int argc, char **argv) {
         case 0:
             atexit(func2);
             sleep(3);
+            
             printf("[CHILD]I'm child of %d, my pid is %d\n", getppid(), getpid());
             break;
         default:
-            //signal(SIGINT, handler);
             int result;
             wait(&result);
             printf("[PARENT]I'm parent of %d, my pid id %d, my parent pid is %d\n", res, getpid(), getppid());
