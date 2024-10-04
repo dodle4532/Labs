@@ -23,11 +23,11 @@ int main(int argc, char **argv) {
     (void)argc; (void)argv;
     int res = 0;
     atexit(func);
+    signal(SIGINT, handler);
     struct sigaction sigterm_action;
     memset(&sigterm_action, 0, sizeof(sigterm_action));
     sigterm_action.sa_handler = &handler;
     sigterm_action.sa_flags = SA_SIGINFO;
-    sigaction(SIGINT, &sigterm_action, NULL);
     sigaction(SIGTERM, &sigterm_action, NULL);
     switch (res = fork()) {
         case -1:
