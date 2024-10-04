@@ -31,9 +31,11 @@ int main(int argc, char **argv) {
     sigaction(SIGTERM, &sigterm_action, NULL);
     switch (res = fork()) {
         case -1:
+        {
             int err = errno;
             fprintf(stderr, "Fork error : %s (%d)\n", strerror(err), err);
             break;
+        }
         case 0:
             atexit(func2);
             sleep(3);
@@ -41,11 +43,13 @@ int main(int argc, char **argv) {
             printf("[CHILD]I'm child of %d, my pid is %d\n", getppid(), getpid());
             break;
         default:
+        {
             int result;
             wait(&result);
             printf("[PARENT]I'm parent of %d, my pid id %d, my parent pid is %d\n", res, getpid(), getppid());
             printf("[PARENT] Child exit code %d\n", WEXITSTATUS(result));
             break;
+        }
     }
     return 0;
 }
