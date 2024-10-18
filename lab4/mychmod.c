@@ -54,6 +54,9 @@ mode_t getMode(char first, char second) {
 
 void doChmod(char* fileName, mode_t* modes) {
     int i = 1;
+    if (modes == NULL) {
+        return;
+    }
     mode_t final_mode = modes[0];
     while (modes[i] != 0) {
         final_mode |= modes[i];
@@ -159,8 +162,6 @@ mode_t** getModes(char* string) {
         switch (n)
         {
         case 0:
-            memset(str, 0, sizeof(str));
-            continue;
             break;
         case 1:
             str[2] = 'x';
@@ -192,7 +193,12 @@ mode_t** getModes(char* string) {
         default:
             break;
         }
-        modes[index] = getPermisson(str);
+        if (strlen(str) < 3) {
+            modes[index] = NULL;
+        }
+        else {
+            modes[index] = getPermisson(str);
+        }
         index++;
         memset(str, 0, sizeof(str));
     }
@@ -206,6 +212,7 @@ int main(int argc, char** argv) {
         fprintf(stderr, "Incorrect arguments\n");
         return 1;
     }
+    
     char* argument = argv[1];
     path = argv[2];
 
