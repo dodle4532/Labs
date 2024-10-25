@@ -9,17 +9,6 @@
 bool isPlus = false;
 char* path;
 
-/*
-S_IRUSR: Owner Read permission (Owner Read)
-S_IWUSR: Owner Write permission (Owner Write)
-S_IXUSR: Owner Execute permission (Owner Execute)
-S_IRGRP: Group member read permission (Group Read)
-S_IWGRP: Group member write permission (Group Write)
-S_IXGRP: Execute permission for group members (Group Execute)
-S_IROTH: Read permission for other users (Others Read)
-S_IWOTH: Write permission for other users (Others Write)
-S_IXOTH: Execute permission for other users (Others Execute)
-*/
 
 mode_t getMode(char first, char second) {
     if (first == 'u' && second == 'r') {
@@ -75,6 +64,8 @@ mode_t* getPermisson(char* string) {
     char* second = (char*) calloc(4, sizeof(char));
     bool isFirst = true;
     int j = 0;
+    struct stat file_stat;
+    stat(path, &file_stat);
     for (int i = 0; i < strlen(string); ++i) {
         if (string[i] == '=') {
             char* str = (char*)calloc(16, sizeof(char));
@@ -124,7 +115,8 @@ mode_t* getPermisson(char* string) {
         for (int j = 0; j < strlen(second); ++j) {
             modes[index] = getMode(first[i], second[j]);
             if (modes[index] == 0) {
-                fprintf(stderr, "Error in getMode");
+                fprintf(stderr, "Error in getMode\n");
+                chmod(path, file_stat.st_mode);
                 exit(1);
             }
             index++;
@@ -220,6 +212,12 @@ int main(int argc, char** argv) {
         if (strlen(argument) != 3) {
             fprintf(stderr, "Incorrect arguments\n");
             return 1;
+        }
+        for (int i = 0; i < 3; ++i) {
+            if (argument[i] < '0' || argument[i] > '7') {
+                fprintf(stderr, "Incorrect arguments\n");
+                return 1;
+            }
         }
         char* str = (char*)calloc(16, sizeof(char));
         strcpy(str, "-rwx");
