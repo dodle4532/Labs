@@ -197,7 +197,7 @@ int main(int argc, char** argv) {
             printf("Archivator:\n");
             printf("To create a archive, enter %s arch_name -i first_file\n", argv[0]);
             printf("To add file to archive, enter %s arch_name -i file_name\n", argv[0]);
-            printf("To extract file, enter %s arch_name -e file_name\nThis file won't be in archive anymore\n", argv[0]);
+            printf("To extract file, enter %s arch_name -e file_name\nThis file won't be in archive anymore\n\n", argv[0]);
             printf("To extract all archive, enter %s arch_name -e\n", argv[0]);
             printf("To show status of archive, enter %s arch_name -s\n", argv[0]);
             return 0;
