@@ -13,12 +13,13 @@ char* addr;
 int shmid;
 
 void handle_sigterm(int sig) {
-    if (sig == SIGTERM || sig == SIGINT) {
-        printf("\nEnd of sending\n");
-        shmdt(addr);
-        shmctl(shmid, IPC_RMID, NULL);
-        exit(0);
+    if (sig == SIGINT) {
+        printf("\n");
     }
+    printf("End of sending\n");
+    shmdt(addr);
+    shmctl(shmid, IPC_RMID, NULL);
+    exit(0);
 }
 
 int main() {
@@ -46,7 +47,7 @@ int main() {
         time_t t = time(NULL);
         struct tm tm = *localtime(&t);
         sprintf(addr, "Pid of sender - %d, Time of sender - %02d:%02d:%02d", getpid(), tm.tm_hour, tm.tm_min, tm.tm_sec);
-        sleep(3);
+        sleep(1);
     }
     return 0;
 }
