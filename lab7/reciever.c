@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <time.h>
 
 int main() {
     key_t key = ftok("shm", 1);
@@ -23,6 +24,9 @@ int main() {
         printf("shmat %s (%d)\n", strerror(err), err);
         return 1;
     }
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+    printf("Pid of reciever- %d, Time of reciever - %02d:%02d:%02d\n", getpid(), tm.tm_hour, tm.tm_min, tm.tm_sec);
     if (!strcmp(addr, "")) {
         printf("Empty string\n");
         shmctl(shmid, IPC_RMID, NULL);
