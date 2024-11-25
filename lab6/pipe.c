@@ -10,7 +10,6 @@
 //дочерний и родительскиц
 int main(int argc, char **argv) {
     (void)argc; (void)argv;
-
     int res = 0;
     int pipedesc[2];
     int pipeRes = pipe(pipedesc);
@@ -35,6 +34,7 @@ int main(int argc, char **argv) {
             write(pipedesc[1], str, strlen(str) + 1);
             close(pipedesc[1]);
             printf("-----------------------------\n");
+            break;
         }
         default: {
             sleep(5);
@@ -42,9 +42,9 @@ int main(int argc, char **argv) {
             int len = 0;
             int waitRes = 0;
             close(pipedesc[1]);
-            char* str = calloc(16, sizeof(char));
+            char* str = calloc(32, sizeof(char));
             while((len = read(pipedesc[0], buf, sizeof(buf))) != 0) {
-                strcat(str, buf);
+                strncat(str, buf, sizeof(buf));
             }
             printf("Получено %s", str);
             free(str);
