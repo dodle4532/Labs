@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
             write(fd, str, strlen(str) + 1);
             close(fd);
             printf("-----------------------------\n");
-            exit(0);
+            break;
         }
         default: {
             sleep(5);
@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
             int fd = open("fifo", O_RDONLY);
             char* str = calloc(32, sizeof(char));
             while((len = read(fd, buf, sizeof(buf))) != 0) {
-                strcat(str, buf);
+                strncat(str, buf, sizeof(buf));
             }
             printf("Получено %s", str);
             free(str);
