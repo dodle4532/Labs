@@ -10,14 +10,14 @@
 
 int main() {
     key_t key = ftok("shm", 1);
-    int shmid = shmget(key, 64, 0666 | IPC_CREAT);
+    int shmid = shmget(key, 64, 0666);
 
     if (shmid < 0) {
         int err = errno;
         printf("shmget %s (%d)\n", strerror(err), err);
         return 1;
     }   
-    int semid = semget(key, 1, IPC_CREAT | 0666);
+    int semid = semget(key, 1, 0666);
     if (semid < 0) {
         int err = errno;
         printf("semget %s (%d)\n", strerror(err), err);
