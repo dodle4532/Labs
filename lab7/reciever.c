@@ -10,7 +10,7 @@
 
 int main() {
     key_t key = ftok("shm", 1);
-    int shmid = shmget(key, 64, 0666 | IPC_CREAT);
+    int shmid = shmget(key, 64, 0666);
 
     if (shmid < 0) {
         int err = errno;
