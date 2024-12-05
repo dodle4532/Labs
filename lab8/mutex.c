@@ -36,7 +36,7 @@ int main() {
     pthread_t threadWrite;
     for (int i = 0; i < 10; ++i) {
         pthread_create(&threadWrite, NULL, pthread_func_write, NULL);
-        usleep(500000);
+        usleep(200000);
         pthread_create(&threadsRead[i], NULL, pthread_func_read, NULL);
     }
     for (int i = 0; i < 10; ++i) {
