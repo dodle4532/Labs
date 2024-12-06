@@ -21,7 +21,7 @@ void handle_sigterm(int sig) {
     printf("End of sending\n");
     shmdt(addr);
     shmctl(shmid, IPC_RMID, NULL);
-    semctl(semid, 0, SETVAL, 1);
+    semctl(semid, 0, IPC_RMID, NULL);
     exit(0);
 }
 
@@ -39,6 +39,7 @@ int main() {
         printf("semget %s (%d)\n", strerror(err), err);
         return 1;
     }
+    semctl(semid, 0, SETVAL, 1);
     addr = (char*)shmat(shmid, NULL, 0);
     printf("Sending start, pid - %d\n", getpid());
     if (addr == (void*)-1) {
