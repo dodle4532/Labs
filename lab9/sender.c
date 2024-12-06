@@ -33,7 +33,7 @@ int main() {
         printf("shmget %s (%d)\n", strerror(err), err);
         return 1;
     }
-    semid = semget(key, 1, IPC_CREAT | 0666);
+    semid = semget(key, 1, IPC_CREAT | 0666 | IPC_EXCL);
     if (semid < 0) {
         int err = errno;
         printf("semget %s (%d)\n", strerror(err), err);
