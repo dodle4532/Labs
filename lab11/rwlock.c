@@ -14,7 +14,7 @@ bool isRead = true;
 void* pthread_func_read(void* arg) {
     pthread_mutex_lock(&mtx);
     printf("%d %d\n", curMax, *(int*)arg);
-    while (curMax - 1 > *(int*)arg) {
+    while (isRead) {
         pthread_rwlock_wrlock(&rwlock);
     }
     printf("My tid - %x\n", pthread_self());
@@ -56,7 +56,7 @@ int main() {
     pthread_create(&threadWrite, NULL, pthread_func_write, NULL);
     for (int i = 0; i < 10; ++i) {
         pthread_create(&threadsRead[i], NULL, pthread_func_read, (void*)&i);
-        usleep(500000);
+        usleep(50);
     }
     for (int i = 0; i < 10; ++i) {
         pthread_join(threadsRead[i], NULL);
