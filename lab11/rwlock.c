@@ -49,7 +49,7 @@ int main() {
     pthread_create(&threadWrite, NULL, pthread_func_write, NULL);
     for (int i = 0; i < 10; ++i) {
         pthread_create(&threadsRead[i], NULL, pthread_func_read, (void*)&i);
-        usleep(1); // гарантирует, что в arg все правильно передастся
+        usleep(50); // гарантирует, что в arg все правильно передастся
     }
     pthread_join(threadWrite, NULL);
     for (int i = 0; i < 10; ++i) {
