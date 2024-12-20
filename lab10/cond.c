@@ -10,20 +10,20 @@ int curMax = 0;
 
 void* pthread_func_read(void* arg) {
     int i = *(int*)arg;
-    pthread_mutex_lock(&mtx);
-    while (curMax <= i) { // Ждем когда пора читать
+    for (int i = 0; i < 10; ++i) {
+        pthread_mutex_lock(&mtx);
+        printf("1 %x %d\n", pthread_self(), i);
         pthread_cond_wait(&cond, &mtx);
+        printf("2\n");
+        printf("My tid - %x\n", pthread_self());
+        printf("Current max for mas - %d\n", curMax - 1);
+        for (int i = 0; i < curMax; ++i) {
+            printf("%d ", mas[i]);
+        } 
+        printf("\n\n");
+        pthread_mutex_unlock(&mtx);
     }
-    //printf("%d---%d\n", curMax, i);
-    printf("My tid - %x\n", pthread_self());
-    printf("Current max for mas - %d\n", curMax - 1);
-    for (int i = 0; i < curMax; ++i) {
-        printf("%d ", mas[i]);
-    } 
-    printf("\n");
-    printf("\n");
-    sleep(1);
-    pthread_mutex_unlock(&mtx);
+        printf("FINISH\n");
     pthread_exit(NULL);
 }
 
@@ -37,7 +37,7 @@ void* pthread_func_write(void* arg) {
         pthread_mutex_unlock(&mtx);
         sleep(1);
     }
-
+    printf("FINISH\n");
     pthread_exit(NULL);
 }
 
@@ -51,6 +51,7 @@ int main() {
         pthread_create(&threadsRead[i], NULL, pthread_func_read, (void*)&i);
         usleep(50); // гарантирует, что в arg все правильно передастся
     }
+
     pthread_join(threadWrite, NULL);
     for (int i = 0; i < 10; ++i) {
         pthread_join(threadsRead[i], NULL);
