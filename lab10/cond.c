@@ -28,7 +28,7 @@ void* pthread_func_write(void* arg) {
         pthread_mutex_lock(&mtx);
         mas[curMax] = curMax;
         curMax++;
-        printf("Write ended\n");
+        //printf("Write ended\n");
         pthread_cond_broadcast(&cond);
         pthread_mutex_unlock(&mtx);
         sleep(1);
