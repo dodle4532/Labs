@@ -11,9 +11,7 @@ int curMax = 0;
 void* pthread_func_read(void* arg) {
     for (int i = 0; i < 10; ++i) {
         pthread_mutex_lock(&mtx);
-        printf("1 %x %d\n", pthread_self(), i);
         pthread_cond_wait(&cond, &mtx);
-        printf("2\n");
         printf("My tid - %x\n", pthread_self());
         printf("Current max for mas - %d\n", curMax - 1);
         for (int i = 0; i < curMax; ++i) {
