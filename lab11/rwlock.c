@@ -9,11 +9,11 @@ int curMax = 0;
 
 void* pthread_func_read(void* arg) {
     int i = *(int*)arg;
-    pthread_rwlock_rdlock(&rwlock);
+    pthread_rwlock_wrlock(&rwlock);
     while (curMax <= i) { // Если еще не пора читать, то скинем мьютекс и попробуем еще раз
         pthread_rwlock_unlock(&rwlock);
         usleep(1000);
-        pthread_rwlock_rdlock(&rwlock);
+        pthread_rwlock_wrlock(&rwlock);
 
     }
     sleep(1);
@@ -30,7 +30,7 @@ void* pthread_func_read(void* arg) {
 
 void* pthread_func_write(void* arg) {
     while(curMax < 10) {
-        pthread_rwlock_wrlock(&rwlock);
+        pthread_rwlock_rdlock(&rwlock);
         mas[curMax] = curMax;
         curMax++;
         printf("Write ended\n");
