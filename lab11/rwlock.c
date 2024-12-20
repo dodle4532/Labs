@@ -9,7 +9,7 @@ int curMax = 0;
 
 void* pthread_func_read(void* arg) {
     for (int i = 0; i < 10; ++i) {
-        pthread_rwlock_wrlock(&mtx);
+        pthread_rwlock_rdlock(&mtx);
         printf("My tid - %x\n", pthread_self());
         printf("Current max for mas - %d\n", curMax - 1);
         for (int i = 0; i < curMax; ++i) {
@@ -24,7 +24,7 @@ void* pthread_func_read(void* arg) {
 
 void* pthread_func_write(void* arg) {
     while(curMax < 10) {
-        pthread_rwlock_rdlock(&mtx);
+        pthread_rwlock_wrlock(&mtx);
         mas[curMax] = curMax;
         curMax++;
         printf("Write ended\n");
