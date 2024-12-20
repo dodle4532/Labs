@@ -8,7 +8,6 @@ int mas[10];
 int curMax = 0;
 
 void* pthread_func_read(void* arg) {
-    int i = *(int*)arg;
     for (int i = 0; i < 10; ++i) {
         pthread_mutex_lock(&mtx);
         printf("My tid - %x\n", pthread_self());
@@ -41,7 +40,7 @@ int main() {
     pthread_t threadWrite;
     pthread_create(&threadWrite, NULL, pthread_func_write, NULL);
     for (int i = 0; i < 10; ++i) {
-        pthread_create(&threadsRead[i], NULL, pthread_func_read, (void*)&i);
+        pthread_create(&threadsRead[i], NULL, pthread_func_read, NULL);
         usleep(50); // гарантирует, что в arg все правильно передастся
     }
 
