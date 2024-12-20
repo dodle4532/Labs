@@ -9,7 +9,6 @@ int mas[10];
 int curMax = 0;
 
 void* pthread_func_read(void* arg) {
-    int i = *(int*)arg;
     for (int i = 0; i < 10; ++i) {
         pthread_mutex_lock(&mtx);
         printf("1 %x %d\n", pthread_self(), i);
@@ -23,7 +22,6 @@ void* pthread_func_read(void* arg) {
         printf("\n\n");
         pthread_mutex_unlock(&mtx);
     }
-        printf("FINISH\n");
     pthread_exit(NULL);
 }
 
@@ -37,7 +35,6 @@ void* pthread_func_write(void* arg) {
         pthread_mutex_unlock(&mtx);
         sleep(1);
     }
-    printf("FINISH\n");
     pthread_exit(NULL);
 }
 
@@ -48,8 +45,8 @@ int main() {
     pthread_t threadWrite;
     pthread_create(&threadWrite, NULL, pthread_func_write, NULL);
     for (int i = 0; i < 10; ++i) {
-        pthread_create(&threadsRead[i], NULL, pthread_func_read, (void*)&i);
-        usleep(50); // гарантирует, что в arg все правильно передастся
+        pthread_create(&threadsRead[i], NULL, pthread_func_read, NULL);
+        usleep(50);
     }
 
     pthread_join(threadWrite, NULL);
