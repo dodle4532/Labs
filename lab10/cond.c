@@ -9,7 +9,7 @@ int mas[10];
 int curMax = 0;
 
 void* pthread_func_read(void* arg) {
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 9; ++i) {
         pthread_mutex_lock(&mtx);
         pthread_cond_wait(&cond, &mtx);
         printf("My tid - %x\n", pthread_self());
